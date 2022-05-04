@@ -1,0 +1,34 @@
+Link    
+===============
+<p>
+
+https://aclanthology.org/2021.naacl-main.122.pdf
+
+https://github.com/hanjanghoon/BERT_FP
+
+</p>
+
+
+Question   
+===============
+1. TypeError: object of type 'float' has no len()， ValueError: array split does not result in an equal division. （已解决）
+    >正确的回答加上错误的回答一共应该是每一个context 10条，不能多也不能少。
+2. When torch.cuda.is_available() return true, still get error “RuntimeError: No CUDA GPUs are available”: (已解决）
+    >把 os.environ["CUDA_VISIBLE_DEVICES"] = "1"，改成os.environ["CUDA_VISIBLE_DEVICES"] = "0"。 
+     因为0是google colab上面的cuda device 的id。
+3. masked_lm_loss = loss_fct(prediction_scores.view(-1, model.config.vocab_size), AttributeError: 'str' object has no attribute 'view'
+    >重新安装transformers==2.8.0
+4. ret = input.log_softmax(dim) RuntimeError: CUDA out of memory.
+    >Decrease the batch size help
+5. Input, output and indices must be on the current device.（已解决）
+    >需要把tensor 传到cuda 上面， 即ids = to_cuda(ids)
+
+
+
+
+Thought
+===============
+1. 英文数据过少的情况如何有效的提高模型的准确性？
+2. 需要针对dog text 数据重新做post-training, 尝试使用其他的英文数据已经训练好的post-training 模型，
+    效果一般。因此需要复现这篇论文中使用的post-training 方法。
+3. 英文数据过少的情况如何有效的提高数据结构
