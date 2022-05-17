@@ -9,6 +9,10 @@ https://github.com/hanjanghoon/BERT_FP
 </p>
 
 
+Train   
+===============
+1. 
+
 Question   
 ===============
 1. TypeError: object of type 'float' has no len()， ValueError: array split does not result in an equal division. （已解决）
