@@ -20,6 +20,7 @@ Train
        4. When I put my front paws together I fall on my face	
        5. What does that mean?	
        6. It means IT'S ANATOMICALLY IMPOSSIBLE for a Dog to pray<br>
+       
     2. 
        1. 0	
        2. All Dogs go to heaven	
@@ -34,6 +35,7 @@ short example of Cornell movie data)<br>
       1. 1	
       2. you got something on your mind	
       3. i counted on you to help my cause you and that thug are obviously failing arent we ever going on our date
+      
    2. 
       1. 0	
       2. you got something on your mind	
@@ -45,6 +47,7 @@ Below is just a short example of MSC data)<br>
       1. 1	
       2. I need some advice on where to go on vacation, have you been anywhere lately?	
       3. I have been all over the world. I'm military.
+      
    2. 
       1. 0	
       2. I need some advice on where to go on vacation, have you been anywhere lately?	
