@@ -20,14 +20,14 @@ Train
        4. When I put my front paws together I fall on my face	
        5. What does that mean?	
        6. It means IT'S ANATOMICALLY IMPOSSIBLE for a Dog to pray<br>
-    2. 
-       1. 0	
-       2. All Dogs go to heaven
-       3. You seem confident
-       4. When I put my front paws together I fall on my face
-       5. What does that mean?
-       6. Dogs have sound phobia for noises that they are not familiar with.
-2. with Cornell data(start with 1, 0 to represent the gold response or not, then start with 
+2. 
+   1. 0	
+   2. All Dogs go to heaven
+   3. You seem confident
+   4. When I put my front paws together I fall on my face
+   5. What does that mean?
+   6. Dogs have sound phobia for noises that they are not familiar with.
+3. with Cornell data(start with 1, 0 to represent the gold response or not, then start with 
 person 1 speech/person 2 speech..., the length of context is not fixed. Below is just a 
 short example of Cornell movie data)<br>
    1. 1. 1	
@@ -37,8 +37,8 @@ short example of Cornell movie data)<br>
    2. 1. 0	
       2. you got something on your mind	
       3. separate incidents
-3. with cornell data and dog data at the end of dataset)<br>
-4. with MSC (Multiple Session Chat) dataset (including context length between 6 - 14.
+4. with cornell data and dog data at the end of dataset)<br>
+5. with MSC (Multiple Session Chat) dataset (including context length between 6 - 14.
 Below is just a short example of MSC data)<br>
    1. 1. 1	
       2. I need some advice on where to go on vacation, have you been anywhere lately?	
