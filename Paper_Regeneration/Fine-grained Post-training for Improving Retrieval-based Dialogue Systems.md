@@ -11,7 +11,46 @@ https://github.com/hanjanghoon/BERT_FP
 
 Train   
 ===============
-1. 
+1. with dog data(start with 1, 0 to represent the gold response or not, then start with dog speech
+/person speech/dog speech/person speech/response, the length of context is fixed as 4)<br>
+    1. 
+       1. 1	
+       2. All Dogs go to heaven	
+       3. You seem confident	
+       4. When I put my front paws together I fall on my face	
+       5. What does that mean?	
+       6. It means IT'S ANATOMICALLY IMPOSSIBLE for a Dog to pray<br>
+    2. 
+       1. 0	
+       2. All Dogs go to heaven	
+       3. You seem confident	
+       4. When I put my front paws together I fall on my face	
+       5. What does that mean?	
+       6. Dogs have sound phobia for noises that they are not familiar with.
+2. with Cornell data(start with 1, 0 to represent the gold response or not, then start with 
+person 1 speech/person 2 speech..., the length of context is not fixed. Below is just a 
+short example of Cornell movie data)<br>
+   1. 
+      1. 1	
+      2. you got something on your mind	
+      3. i counted on you to help my cause you and that thug are obviously failing arent we ever going on our date
+   2. 
+      1. 0	
+      2. you got something on your mind	
+      3. separate incidents
+3. with cornell data and dog data at the end of dataset)<br>
+4. with MSC (Multiple Session Chat) dataset (including context length between 6 - 14.
+Below is just a short example of MSC data)<br>
+   1. 
+      1. 1	
+      2. I need some advice on where to go on vacation, have you been anywhere lately?	
+      3. I have been all over the world. I'm military.
+   2. 
+      1. 0	
+      2. I need some advice on where to go on vacation, have you been anywhere lately?	
+      3. Yes! I am an eager runner, so my clothes get sweaty a lot.
+6. with MSC (Multiple Session Chat) dataset (only including several fixed context length, 13, 21, 25)<br>
+7. with MSC (Multiple Session Chat) dataset (including context length between 2 - 19) <br>
 
 Question   
 ===============
