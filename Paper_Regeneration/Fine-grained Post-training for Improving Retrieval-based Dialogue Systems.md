@@ -13,13 +13,15 @@ Train
 ===============
 1. with dog data(start with 1, 0 to represent the gold response or not, then start with dog speech
 /person speech/dog speech/person speech/response, the length of context is fixed as 4)<br>
-    1. 1. 1	
+    1. 
+       1. 1	
        2. All Dogs go to heaven	
        3. You seem confident	
        4. When I put my front paws together I fall on my face	
        5. What does that mean?	
        6. It means IT'S ANATOMICALLY IMPOSSIBLE for a Dog to pray<br>
-    2. 1. 0	
+    2. 
+       1. 0	
        2. All Dogs go to heaven
        3. You seem confident
        4. When I put my front paws together I fall on my face
