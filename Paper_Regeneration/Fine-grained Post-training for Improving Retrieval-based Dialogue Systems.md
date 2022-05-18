@@ -28,24 +28,20 @@ Train
 2. with Cornell data(start with 1, 0 to represent the gold response or not, then start with 
 person 1 speech/person 2 speech..., the length of context is not fixed. Below is just a 
 short example of Cornell movie data)<br>
-   1. 
-      1. 1	
+   1. 1. 1	
       2. you got something on your mind	
       3. i counted on you to help my cause you and that thug are obviously 
       failing arent we ever going on our date
-   2. 
-      1. 0	
+   2. 1. 0	
       2. you got something on your mind	
       3. separate incidents
 3. with cornell data and dog data at the end of dataset)<br>
 4. with MSC (Multiple Session Chat) dataset (including context length between 6 - 14.
 Below is just a short example of MSC data)<br>
-   1. 
-      1. 1	
+   1. 1. 1	
       2. I need some advice on where to go on vacation, have you been anywhere lately?	
       3. I have been all over the world. I'm military.
-   2. 
-      1. 0	
+   2. 1. 0	
       2. I need some advice on where to go on vacation, have you been anywhere lately?	
       3. Yes! I am an eager runner, so my clothes get sweaty a lot.
 6. with MSC (Multiple Session Chat) dataset (only including several fixed context length, 13, 21, 25)<br>
