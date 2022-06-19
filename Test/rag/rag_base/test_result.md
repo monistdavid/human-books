@@ -62,21 +62,21 @@ opt_overrides={'model_file': '/usr/local/lib/python3.7/dist-packages/data/models
 Test_1 ("zoo:hallucination/bart_rag_token/model", no history)
 ===============
 compare with zoo:msc/blender3B_1024/model
-![img.png](img_2.png)![img_1.png](img_3.png)
+![img.png](img/img_2.png)![img_1.png](img/img_3.png)
 
 
 Test_2 ("zoo:hallucination/bart_rag_token/model", no history)
 ===============
 compare with zoo:msc/blender3B_1024/model
-![img_2.png](img_2.png)![img_3.png](img_3.png)
+![img_2.png](img/img_2.png)![img_3.png](img/img_3.png)
 
 
 Test_3 ("zoo:hallucination/bart_rag_token/model", no history)
 ===============
 compare with zoo:msc/blender3B_1024/model
-![img_4.png](img_4.png)![img_5.png](img_5.png)
+![img_4.png](img/img_4.png)![img_5.png](img/img_5.png)
 
 
 Test_4 (blenderbot400m, no history)
 ===============
-![img_6.png](img_6.png)
+![img_6.png](img/img_6.png)
