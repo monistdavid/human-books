@@ -37,6 +37,13 @@ train rag model with blender_400Mdistill model for generative
 --model-file blender_rag/trained_blender_rag
 `
 
+test the trained blender400m_distill rag model
+from parlai.core.agents import create_agent_from_model_file
+`rag_agent = create_agent_from_model_file(model_file="blender_rag/trained_blender_rag", opt_overrides={
+'skip_generation': False, 'rag_model_type': 'token', 'rag_retriever_type': 'dpr', 'generation_model':
+'transformer/generator', 'path_to_index': 'DPR/embeddings/HNSW32', 'indexer_type': 'compressed', 
+'compressed_indexer_factory': 'HNSW32', 'path_to_dpr_passages': 'DPR/dog_data/dog_index.csv'})`
+
 test the trained rag model
 `!parlai interactive -mf zoo:hallucination/bart_rag_sequence/model --rag-model-type token --rag-retriever-type dpr \
 --generation-model bart --path-to-index DPR/embeddings/HNSW32 --indexer-type compressed --compressed-indexer-factory HNSW32 \
@@ -59,6 +66,7 @@ opt_overrides={'model_file': '/usr/local/lib/python3.7/dist-packages/data/models
 'compressed_indexer_factory': 'HNSW32', 'path_to_dpr_passages': 'DPR/dog_data/dog_index.csv', 
 'compressed_indexer_gpu_train': False})
 `
+
 Test_1 ("zoo:hallucination/bart_rag_token/model", no history)
 ===============
 compare with zoo:msc/blender3B_1024/model
@@ -77,6 +85,9 @@ compare with zoo:msc/blender3B_1024/model
 ![img_4.png](img/img_4.png)![img_5.png](img/img_5.png)
 
 
-Test_4 (blenderbot400m, no history)
+Test_4 (blenderbot400m_distill_batchsize_1, no history)
 ===============
 ![img_6.png](img/img_6.png)
+
+Test_5 (blenderbot400m_distill_batchsize_2_ppl_11.7, no history)
+===============
