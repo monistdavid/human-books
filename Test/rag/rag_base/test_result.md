@@ -54,6 +54,8 @@ problem
 ===============
 1. using too much retrieval
 2. the score of retrieval response are always 0.99
+3. FileNotFoundError: [Errno 2] No such file or directory: '/usr/local/lib/python3.7/dist-packages/data/wizard_of_wikipedia/data.json'
+   1. need to copy the wizard_of_wikipedia agent.py file from parlai
 
 Link
 ===============
