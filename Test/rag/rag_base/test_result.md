@@ -93,5 +93,11 @@ Test_4 (blenderbot400m_distill_batchsize_1, no history)
 ===============
 ![img_6.png](img/img_6.png)
 
-Test_5 (blenderbot400m_distill_batchsize_2_ppl_11.7, no history)
+Test_5 (separate the doge wiki to a lot of stories with meaningful title, compressed version)
 ===============
+![img.png](img/img_8.png)
+
+Test_6 (separate the doge wiki to a lot of stories with meaningful title, exact version)
+===============
+![img.png](img/img_9.png)
+testing result shows that exact and compressed version of index file makes little difference on RAG
