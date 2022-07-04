@@ -57,6 +57,8 @@ problem
 3. FileNotFoundError: [Errno 2] No such file or directory: '/usr/local/lib/python3.7/dist-packages/data/wizard_of_wikipedia/data.json'
    1. need to copy the wizard_of_wikipedia agent.py file from parlai
 4. AttributeError: 'DistributedDataParallel' object has no attribute 'get_retriever_delimiter':
+5. TypeError: Object of type set is not JSON serializable, when training with cmu_dog data:
+   1. manually rewrite the opt file
 
 
 Link
