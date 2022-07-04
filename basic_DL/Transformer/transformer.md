@@ -2,75 +2,109 @@ Link
 ===============
 <p>
 
-https://blog.floydhub.com/the-transformer-in-pytorch/#multi-headed-attention
+https://jalammar.github.io/illustrated-tra
 
-https://blog.floydhub.com/attention-mechanism/#:~:text=When%20we%20think%20about%20the,factors%20when%20processing%20the%20data.
-
-https://jalammar.github.io/illustrated-transformer/
-
-https://jalammar.github.io/visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention/
-
-https://www.youtube.com/watch?v=UNmqTiOnRfg
+http://nlp.seas.harvard.edu/2018/04/03/attention.html
 
 </p>
 
 
 Notes
 ===============
-1. The context vector turned out to be a bottleneck for these types of models. It made it challenging
-   for the models to deal with long sentences. A solution was proposed in Bahdanau et al.,
-   2014 and Luong et al., 2015. These papers introduced and refined a technique called
-   “Attention”, which highly improved the quality of machine translation systems.
-   Attention allows the model to focus on the relevant parts of the input sequence as needed.
-2. An attention model differs from a classic sequence-to-sequence model in two main ways:
-   1. First, the encoder passes a lot more data to the decoder. Instead of passing the last hidden
-      state of the encoding stage, the encoder passes all the hidden states to the decoder:
-      ![img.png](img.png)
-   2. Second, an attention decoder does an extra step before producing its output. In order to
-      focus on the parts of the input that are relevant to this decoding time step,
-      the decoder does the following:
-      1. Look at the set of encoder hidden states it received – each encoder hidden state is most
-         associated with a certain word in the input sentence
-      2. Give each hidden state a score (let’s ignore how the scoring is done for now)
-      3. Multiply each hidden state by its softmaxed score, thus amplifying hidden states with high
-         scores, and drowning out hidden states with low scores
-         ![img_1.png](img_1.png)
-3. how exactly the attention process works:
-   1. The attention decoder RNN takes in the embedding of the <END> token, and an initial decoder hidden state. 
-   2. The RNN processes its inputs, producing an output and a new hidden state vector (h4). 
-      The output is discarded.
-   3. Attention Step: We use the encoder hidden states and the h4 vector to calculate a context vector
-      (C4) for this time step.
-   4. We concatenate h4 and C4 into one vector. 
-   5. We pass this vector through a feedforward neural network (one trained jointly with the model). 
-   6. The output of the feedforward neural networks indicates the output word of this time step. 
-   7. Repeat for the next time steps
-      ![img_2.png](img_2.png)![img_3.png](img_3.png)
+1. The biggest benefit, however, comes from how The Transformer lends itself to parallelization.
+2. here is the architecture of the transformer model in the paper <Attention is all you need>:
+   ![img.png](img.png)
+   The encoders are all identical in structure (yet they do not share weights).
+   Each one is broken down into two sub-layers:
+   ![img_1.png](img_1.png)
+   The decoder has both those layers, but between them is an attention layer that helps the decoder
+   focus on relevant parts of the input sentence (similar what attention does in seq2seq models).
+   ![img_2.png](img_2.png)
+3. As is the case in NLP applications in general, we begin by turning each input word into a vector
+   using an embedding algorithm. The embedding only happens in the bottom-most encoder.
+   The abstraction that is common to all the encoders is that they receive a list of vectors each
+   of the size 512 – In the bottom encoder that would be the word embeddings, but in other encoders,
+   it would be the output of the encoder that’s directly below. The size of this list is hyperparameter
+   we can set – basically it would be the length of the longest sentence in our training dataset.
+   After embedding the words in our input sequence, each of them flows through each of the two layers
+   of the encoder. and we see that the word in each position flows through its own path in the decoder.
+   In other word, there are dependencies between these paths in the self-attention layer.
+   The feed-forward layer does not have those dependencies, however, and thus the various
+   paths can be executed in parallel while flowing through the feed-forward layer.
+   ![img_3.png](img_3.png)
+4. Self-attention is the method the Transformer uses to bake the “understanding” of other relevant
+   words into the one we’re currently processing.
+   ![img_4.png](img_4.png)
+5. How to calculate self-attention using vectors.
+   1. The first step in calculating self-attention is to create three vectors from each of the encoder’s
+      input vectors (in this case, the embedding of each word).So for each word, we create a Query vector,
+      a Key vector, and a Value vector. These vectors are created by multiplying the embedding by
+      three matrices that we trained during the training process. Notice that these new vectors are
+      smaller in dimension than the embedding vector. Their dimensionality is 64, while the embedding
+      and encoder input/output vectors have dimensionality of 512. They don’t HAVE to be smaller,
+      this is an architecture choice to make the computation of multiheaded attention (mostly) constant.
+      ![img_5.png](img_5.png)
+   2. The second step in calculating self-attention is to calculate a score. Say we’re calculating
+      the self-attention for the first word in this example, “Thinking”. We need to score each word
+      of the input sentence against this word. The score determines how much focus to place on
+      other parts of the input sentence as we encode a word at a certain position. The score is calculated
+      by taking the dot product of the query vector with the key vector of the respective word we’re
+      scoring. So if we’re processing the self-attention for the word in position #1, the first
+      score would be the dot product of q1 and k1. The second score would be the dot product of q1 and k2.
+      ![img_6.png](img_6.png)
+      The third and fourth steps are to divide the scores by 8 (the square root of the dimension of the key
+      vectors used in the paper – 64. This leads to having more stable gradients. There could be other
+      possible values here, but this is the default), then pass the result through a softmax operation.
+      Softmax normalizes the scores so they’re all positive and add up to 1.
+      ![img_7.png](img_7.png)
+      This softmax score determines how much each word will be expressed at this position.
+      Clearly the word at this position will have the highest softmax score, but sometimes it’s useful
+      to attend to another word that is relevant to the current word.
+   3. The fifth step is to multiply each value vector by the softmax score (in preparation to sum them up).
+      The intuition here is to keep intact the values of the word(s) we want to focus on, and drown-out
+      irrelevant words (by multiplying them by tiny numbers like 0.001, for example).
+   4. The sixth step is to sum up the weighted value vectors. This produces the output of the self-attention
+      layer at this position (for the first word).
+      ![img_8.png](img_8.png)
+      That concludes the self-attention calculation. The resulting vector is one we can send along to
+      the feed-forward neural network. In the actual implementation, however, this calculation is done
+      in matrix form for faster processing. So let’s look at that now that we’ve seen the intuition of
+      the calculation on the word level.
+6. For faster processing, transformers use matrix to represent the whole sequences instead of vector to represent
+   each word.
+   ![img_9.png](img_9.png)
+   Every row in the X matrix corresponds to a word in the input sentence. We again see the difference 
+   in size of the embedding vector (512, or 4 boxes in the figure), and the q/k/v vectors (64, or 3 boxes
+   in the figure)
+   Finally, since we’re dealing with matrices, we can condense steps two through six in one formula to
+   calculate the outputs of the self-attention layer.
+   ![img_10.png](img_10.png)
+7. “multi-headed” attention improves the performance of the attention layer in two ways:
+   1. It expands the model’s ability to focus on different positions. Yes, in the example above, 
+      z1 contains a little bit of every other encoding, but it could be dominated by the the actual
+      word itself. It would be useful if we’re translating a sentence like “The animal didn’t cross 
+      the street because it was too tired”, we would want to know which word “it” refers to.
+   2. It gives the attention layer multiple “representation subspaces”. As we’ll see next, with 
+      multi-headed attention we have not only one, but multiple sets of Query/Key/Value weight 
+      matrices (the Transformer uses eight attention heads, so we end up with eight sets for each 
+      encoder/decoder). Each of these sets is randomly initialized. Then, after training, each set 
+      is used to project the input embeddings (or vectors from lower encoders/decoders) into a different 
+      representation subspace.
+   ![img_11.png](img_11.png)
+
+
 
 Thoughts
 ===============
-1. why the attention mechanism happened in the last step instead of every decoder steps? 
-   1. I was wrong
-
-2. why attention mechanism is better than RNN (LSTM)? 
-   1. LSTM know what knowledge to keep or update, maybe there is still a small chance it deletes the key information 
-      that will be needed in the future?
-   2. In the opposite, attention mechanism doesn't forget or update things. It keeps all the information
-      and just use a clever way to use them. 
-
-3. how do people came up with attention mechanism?
-   1. is it because they notice human has this kind of attention or characteristic?
-   2. is so, what else characteristic human are better than the machine?
-
+1. why multipling each value vector with the softmax score is able to keep intact the values of the word?
+   1. as self-attention not only output the attention attribute but also the word information itself, 
+      so having a value vector to represent its word information should be important
+2. what is sum up means in the sixth step? 
+   1. add all vectors numbers together or just simply combine all vector parallel together?
+3. how fast can it be to use matrix instead of vectors?
+4. why eight heads? Is it a magic number?
+5. why multiple heads is able to expand the model's ability to focus on different positions?
 
 
 Summary
 ===============
-attention mechanism is one key component in Transformers, and is a great way to further improve sequence 
-to sequence architecture in deep learning. it gives different parts of sequence different score to 
-represent its focus degree and appropriately use that information in the decoder. The attention decoder
-RNN doesn't just give output like normal decoder RNN. Instead, it skips the output, only use the hidden 
-vectors generated from the normal decoder. And then, combine the output hidden state vector with the all original
-encoder hidden states, a new context vector is generated. With the new context vector as input, a feedforward 
-neural network is used to generated output. This output is the final representation of the output word. By
-re-doing these steps on every word, this is how attention mechanism works. 

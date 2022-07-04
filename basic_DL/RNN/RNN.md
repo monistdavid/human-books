@@ -6,6 +6,7 @@ http://karpathy.github.io/2015/05/21/rnn-effectiveness/
 
 https://jalammar.github.io/visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention/
 
+https://www.youtube.com/watch?v=UNmqTiOnRfg
 
 </p>
 
