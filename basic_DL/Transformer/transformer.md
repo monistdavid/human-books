@@ -73,25 +73,82 @@ Notes
 6. For faster processing, transformers use matrix to represent the whole sequences instead of vector to represent
    each word.
    ![img_9.png](img_9.png)
-   Every row in the X matrix corresponds to a word in the input sentence. We again see the difference 
+   Every row in the X matrix corresponds to a word in the input sentence. We again see the difference
    in size of the embedding vector (512, or 4 boxes in the figure), and the q/k/v vectors (64, or 3 boxes
    in the figure)
    Finally, since we’re dealing with matrices, we can condense steps two through six in one formula to
    calculate the outputs of the self-attention layer.
    ![img_10.png](img_10.png)
 7. “multi-headed” attention improves the performance of the attention layer in two ways:
-   1. It expands the model’s ability to focus on different positions. Yes, in the example above, 
+   1. It expands the model’s ability to focus on different positions. Yes, in the example above,
       z1 contains a little bit of every other encoding, but it could be dominated by the the actual
       word itself. It would be useful if we’re translating a sentence like “The animal didn’t cross 
       the street because it was too tired”, we would want to know which word “it” refers to.
    2. It gives the attention layer multiple “representation subspaces”. As we’ll see next, with 
-      multi-headed attention we have not only one, but multiple sets of Query/Key/Value weight 
-      matrices (the Transformer uses eight attention heads, so we end up with eight sets for each 
-      encoder/decoder). Each of these sets is randomly initialized. Then, after training, each set 
+      multi-headed attention we have not only one, but multiple sets of Query/Key/Value weight
+      matrices (the Transformer uses eight attention heads, so we end up with eight sets for each
+      encoder/decoder). Each of these sets is randomly initialized. Then, after training, each set
       is used to project the input embeddings (or vectors from lower encoders/decoders) into a different 
       representation subspace.
    ![img_11.png](img_11.png)
-
+   This leaves us with a bit of a challenge. The feed-forward layer is not expecting eight matrices –
+   it’s expecting a single matrix (a vector for each word). So we need a way to condense these
+   eight down into a single matrix. We concat the matrices then multiply them by an additional
+   weights matrix WO.
+   ![img_12.png](img_12.png)![img_13.png](img_13.png)
+8. If we add all the attention heads to the picture, however, things can be harder to interpret:
+   ![img_14.png](img_14.png)
+   One thing that’s missing from the model as we have described it so far is a way to account for the order 
+   of the words in the input sequence.
+   To address this, the transformer adds a vector to each input embedding. These vectors follow a specific 
+   pattern that the model learns, which helps it determine the position of each word, or the distance between 
+   different words in the sequence. The intuition here is that adding these values to the embeddings provides 
+   meaningful distances between the embedding vectors once they’re projected into Q/K/V vectors and 
+   during dot-product attention.
+   ![img_15.png](img_15.png)![img_16.png](img_16.png)
+   What might this pattern look like? In the following figure, each row corresponds to a positional encoding 
+   of a vector. So the first row would be the vector we’d add to the embedding of the first word in an 
+   input sequence. Each row contains 512 values – each with a value between 1 and -1. 
+   We’ve color-coded them so the pattern is visible.
+   ![img_17.png](img_17.png)
+9. The Residuals
+   1. One detail in the architecture of the encoder is that each sub-layer (self-attention, ffnn) 
+      in each encoder has a residual connection around it, and is followed by a layer-normalization step.
+      ![img_18.png](img_18.png)
+   2. If we’re to visualize the vectors and the layer-norm operation associated with self attention, 
+      it would look like this:
+      ![img_19.png](img_19.png)
+   3. This goes for the sub-layers of the decoder as well. If we’re to think of a Transformer of 2 stacked 
+      encoders and decoders, it would look something like this:
+      ![img_20.png](img_20.png)
+10. The Decoder
+    1. The encoder start by processing the input sequence. The output of the top encoder is then 
+       transformed into a set of attention vectors K and V. These are to be used by each decoder 
+       in its “encoder-decoder attention” layer which helps the decoder focus on appropriate 
+       places in the input sequence. The following steps repeat the process until a special symbol 
+       is reached indicating the transformer decoder has completed its output. The output of 
+       each step is fed to the bottom decoder in the next time step, and the decoders bubble up 
+       their decoding results just like the encoders did. And just like we did with the encoder 
+       inputs, we embed and add positional encoding to those decoder inputs to indicate the 
+       position of each word. 
+    2. The self attention layers in the decoder operate in a slightly different way than the one 
+       in the encoder: In the decoder, the self-attention layer is only allowed to attend to earlier
+       positions in the output sequence. This is done by masking future positions 
+       (setting them to -inf) before the softmax step in the self-attention calculation.  The 
+       “Encoder-Decoder Attention” layer works just like multiheaded self-attention, except it 
+       creates its Queries matrix from the layer below it, and takes the Keys and Values matrix
+       from the output of the encoder stack.
+11. The Final Linear and Softmax Layer
+    1. The Linear layer is a simple fully connected neural network that projects the vector produced 
+       by the stack of decoders, into a much, much larger vector called a logits vector. 
+       Let’s assume that our model knows 10,000 unique English words (our model’s “output 
+       vocabulary”) that it’s learned from its training dataset. This would make the logits 
+       vector 10,000 cells wide – each cell corresponding to the score of a unique word. 
+       That is how we interpret the output of the model followed by the Linear layer.
+    2. The softmax layer then turns those scores into probabilities (all positive, all add up to 1.0).
+       The cell with the highest probability is chosen, and the word associated with 
+       it is produced as the output for this time step.
+       ![img_21.png](img_21.png)
 
 
 Thoughts
@@ -104,7 +161,11 @@ Thoughts
 3. how fast can it be to use matrix instead of vectors?
 4. why eight heads? Is it a magic number?
 5. why multiple heads is able to expand the model's ability to focus on different positions?
+6. what's the difference between one hot vector and logits vector?
+   1. one hot vector is only 1 and 0. Logits includes a bunch of possibilities
+
 
 
 Summary
 ===============
+Transformers model use self-attention modl
