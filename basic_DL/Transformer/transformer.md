@@ -149,6 +149,17 @@ Notes
        The cell with the highest probability is chosen, and the word associated with 
        it is produced as the output for this time step.
        ![img_21.png](img_21.png)
+12. The goal of reducing sequential computation also forms the foundation of the Extended Neural GPU,
+    ByteNet and ConvS2S, all of which use convolutional neural networks as basic building block, 
+    computing hidden representations in parallel for all input and output positions. In these models, 
+    the number of operations required to relate signals from two arbitrary input or output positions
+    grows in the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. 
+    This makes it more difficult to learn dependencies between distant positions. In the Transformer
+    this is reduced to a constant number of operations, albeit at the cost of reduced effective resolution
+    due to averaging attention-weighted positions, an effect we counteract with Multi-Head Attention.
+13. Here, the encoder maps an input sequence of symbol representations to a sequence of continuous representation  
+    Given the decoder then generates an output sequence of symbols one element at a time. 
+
 
 
 Thoughts
@@ -163,7 +174,7 @@ Thoughts
 5. why multiple heads is able to expand the model's ability to focus on different positions?
 6. what's the difference between one hot vector and logits vector?
    1. one hot vector is only 1 and 0. Logits includes a bunch of possibilities
-
+7. is self attention one of the key component for parallel computing?
 
 
 Summary
