@@ -2,7 +2,7 @@ Link
 ===============
 <p>
 
-https://jalammar.github.io/illustrated-tra
+https://jalammar.github.io/illustrated-transformer/
 
 http://nlp.seas.harvard.edu/2018/04/03/attention.html
 
@@ -160,6 +160,89 @@ Notes
 13. Here, the encoder maps an input sequence of symbol representations to a sequence of continuous representation  
     Given the decoder then generates an output sequence of symbols one element at a time. 
 
+14. Here is a basic EncoderDecoder architecture
+    ```
+    class EncoderDecoder(nn.Module):
+    """
+    A standard Encoder-Decoder architecture. Base for this and many 
+    other models.
+    """
+    def __init__(self, encoder, decoder, src_embed, tgt_embed, generator):
+        super(EncoderDecoder, self).__init__()
+        self.encoder = encoder
+        self.decoder = decoder
+        self.src_embed = src_embed
+        self.tgt_embed = tgt_embed
+        self.generator = generator
+        
+    def forward(self, src, tgt, src_mask, tgt_mask):
+        "Take in and process masked src and target sequences."
+        return self.decode(self.encode(src, src_mask), src_mask,
+                            tgt, tgt_mask)
+    
+    def encode(self, src, src_mask):
+        return self.encoder(self.src_embed(src), src_mask)
+    
+    def decode(self, memory, src_mask, tgt, tgt_mask):
+        return self.decoder(self.tgt_embed(tgt), memory, src_mask, tgt_mask)
+    
+    class Generator(nn.Module):
+    "Define standard linear + softmax generation step."
+    def __init__(self, d_model, vocab):
+        super(Generator, self).__init__()
+        self.proj = nn.Linear(d_model, vocab)
+
+    def forward(self, x):
+        return F.log_softmax(self.proj(x), dim=-1)
+    ```
+   ![img_22.png](img_22.png)
+15. There are multiple Encoder and Decoder stack to form the transformers
+    ```
+    def clones(module, N):
+       "Produce N identical layers."
+       return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
+    
+    class Encoder(nn.Module):
+    "Core encoder is a stack of N layers"
+    def __init__(self, layer, N):
+        super(Encoder, self).__init__()
+        self.layers = clones(layer, N)
+        self.norm = LayerNorm(layer.size)
+        
+    def forward(self, x, mask):
+        "Pass the input (and mask) through each layer in turn."
+        for layer in self.layers:
+            x = layer(x, mask)
+        return self.norm(x)
+    
+    class LayerNorm(nn.Module):
+    "Construct a layernorm module (See citation for details)."
+    def __init__(self, features, eps=1e-6):
+        super(LayerNorm, self).__init__()
+        self.a_2 = nn.Parameter(torch.ones(features))
+        self.b_2 = nn.Parameter(torch.zeros(features))
+        self.eps = eps
+
+    def forward(self, x):
+        mean = x.mean(-1, keepdim=True)
+        std = x.std(-1, keepdim=True)
+        return self.a_2 * (x - mean) / (std + self.eps) + self.b_2
+    ```
+16. The reason for having the residual connection in Transformer is more technical than motivated by the 
+    architecture design. Residual connections mainly help mitigate the vanishing gradient problem. During 
+    the back-propagation, the signal gets multiplied by the derivative of the activation function. In the 
+    case of ReLU, it means that in approximately half of the cases, the gradient is zero. Without the residual
+    connections, a large part of the training signal would get lost during back-propagation. Residual 
+    connections reduce effect because summation is linear with respect to derivative, so each residual 
+    block also gets a signal that is not affected by the vanishing gradient. The summation operations of 
+    residual connections form a path in the computation graphs where the gradient does not get lost. 
+    Another effect of residual connections is that the information stays local in the Transformer layer stack. 
+    The self-attention mechanism allows an arbitrary information flow in the network and thus arbitrary 
+    permuting the input tokens. The residual connections, however, always "remind" the representation 
+    of what the original state was. To some extent, the residual connections give a guarantee that 
+    contextual representations of the input tokens really represent the tokens.
+
+
 
 
 Thoughts
@@ -179,4 +262,26 @@ Thoughts
 
 Summary
 ===============
-Transformers model use self-attention modl
+Transformers model use self-attention and parallel operation (Constant running time). The Transformers model is 
+composed of a stack of Encoder and a stack of Decoder. In the original standard Transformers model, there are 
+the same number of encoder and decoder, which is six. This number could be adjusted according to different situation.
+Different from attention mechanism, self attention use key, query and values to calculate and represent the sequence
+embeddings. In detail, by training the neural network, a key embedding and query embedding is generated. The key and 
+query embeddings will be multiplied by the input sentence embeddings to generate the key and query vectors. Cause each 
+word in the sentence will have a key and query vectors, we will then use a softmax function to get the possibilities
+(the weight) of each word in the sentence related to the current word. In order to keep the original word information,
+the value vector is multiplied to the result comes from the softmax function. Then we got the final attention
+representation of the input sentence. To accelerate the attention calculation process, we use matrix instead of 
+vectors to process the calculating process. 
+Multi-head attention is to further classify different feature of the words. Also a position embeddings is used to
+maintain the distance information between each word. 
+After getting the attention score from the input embedding, the feed forward
+neural network is used to process the input from self-attention. Then the ffnn gives a output embedding to the next
+encoder. Both the self-attention and ffnn compose of a single encoder layer. Further more, we add residual between
+self-attention and ffnn, from both direction, except at the first layer of the encoder. Decoder has similar structure
+with the encoder. However, between self-attention and ffnn, there is an encoder-decoder attention layer, similar
+to the attention mechanism. After encoder, there is a linear layer which makes logits vectors with the same number
+of words size. And then there is a softmax layer to calculate the probabilities of each word and get the final 
+words selection. Regarding to how to select those words and get the output sentence, there are several ways. For 
+example, greedy search, which is get all the highest possibility word as the next word. Beam search, more searching 
+words from long-term.

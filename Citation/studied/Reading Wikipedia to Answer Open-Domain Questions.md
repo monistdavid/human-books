@@ -22,7 +22,7 @@ Notes
    designed to, given a question, efficiently return a subset of relevant articles and (2) Document
    Reader, a multi-layer recurrent neural network machine comprehension model trained to detect
    answer spans in those few returned documents.
-   ![img_1.png](img/img_1.png)
+   ![img_1.png](img/img.png)
 
 
 

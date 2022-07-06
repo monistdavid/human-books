@@ -77,7 +77,7 @@ Notes
       1. chatbots personality can make the interaction more enjoyable.
       
 
-![img.png](img.png)
+![img.png](img/img_2.png)
 
 Thoughts
 ===============
