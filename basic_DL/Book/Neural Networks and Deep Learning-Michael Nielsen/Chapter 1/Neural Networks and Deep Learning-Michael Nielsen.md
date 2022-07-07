@@ -6,6 +6,8 @@ http://neuralnetworksanddeeplearning.com/chap1.html
 
 https://www.youtube.com/watch?v=IHZwWFHWa-w
 
+https://www.youtube.com/watch?v=sDv4f4s2SB8
+
 </p>
 
 
@@ -93,8 +95,13 @@ Notes
    like the quadratic cost it turns out to be easy to figure out how to make small changes in the weights
    and biases so as to get an improvement in the cost. That's why we focus first on minimizing the quadratic
    cost, and only after that will we examine the classification accuracy.
-8. For gradient descent, what we'd like is to find where C achieves its global minimum. 
-   ![img_10.png](img_10.png)
+8. Thinking about we can't really explain the weights and bias generated from the neural network automatically, 
+   The end result is a network which breaks down a very complicated question - does this image show a face or
+   not - into very simple questions answerable at the level of single pixels. It does this through a series
+   of many layers, with early layers answering very simple and specific questions about the input image, 
+   and later layers building up a hierarchy of ever more complex and abstract concepts. Networks with this
+   kind of many-layer structure - two or more hidden layers - are called deep neural networks.
+   
 
 
 
@@ -108,6 +115,11 @@ Thoughts
 3. using matrix instead of numbers or vector is the way how we further improve our neural networks?
 4. nothing is too true or false, nothing is too positive or negative, just like the difference between perceptron
    and sigmoid neuron. That's how human make decision and be logical?
+5. by putting even water to a valley, we can't make sure the water goes to the global minimum, however, put
+   the valley up-side-down on the water, the water could reach the global maximum, is this a way that could 
+   probably solve the hard-to-find global minimum issue? put it from the side, horizontally, might be more 
+   efficient?
+6. I don't know how the quantum computer works, what if it could be used in neural network?
 
 
 
@@ -121,3 +133,15 @@ of computation process. the advantage of using perceptron is we don't necessary 
 the computation process. One of the main problem with perceptron is, small changes will make big different, in other
 word, the perceptron is really not stable. The sigmoid neurons come to mitigate this issue by assigning a smooth
 transition from negative to positive, instead of giving 0 or 1 only. 
+In the book, author made an example of recognizing handwriting numbers from 0-9. Instead of using 4 output 
+neurons, why we use 10? 4 neurons can make 16 possible results as each neuron could represent 0 or 1. From
+the experience, the 10 output does make better performance, but why? The way author explained in the book
+is the 10 output neurons could probably store more image features? As author mentioned, this is all heuristic, 
+and this is not an accurate answer. 
+After setting up the network, we need to consider about the lost. Question about why not just seeing if the 
+output is correct or not for the loss function, but using more complex quadratic cost function? It could be explained
+like the difference between sigmoid and step function. Turing 0 to 1 is obvious, but too large to measure the 
+detail in it. 
+For gradient descent, I am not fully understand the calculating process. From my superficial understanding, 
+the gradient descent algorithm use partial deritive to calculate the slope, and to make the slope as small as
+possible. 
