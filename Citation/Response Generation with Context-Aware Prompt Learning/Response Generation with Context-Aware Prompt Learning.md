@@ -155,4 +155,11 @@ Thoughts
 
 Summary
 ===============
-Author is trying to find a new method to generate response given a dialogue context. 
+Author is trying to find a new method to generate response given a dialogue context. By stating the question of
+finetune, P-tuning and soft tokens (Prefix) problems, separately, author provides a new prompt-tuning method, called
+dynamic prompt learning for context-aware prompt adaptation. The new method uses context to further improve the
+performance of prompt-tuning method. The automatic test and human evaluation show that the new method surpass SOTA
+method (Finetune)
+The question of finetune is the needing to re-train a huge language model with billions of parameters. This is too 
+much computational cost and time-consuming. P-tuning is to manually add prompt to let the language model generate
+the rest of the sentence
