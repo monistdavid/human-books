@@ -130,6 +130,7 @@ Thoughts
    given B occur, what is the probability of A? It is in all spaces that B has, the probability that A occer as well. If
    there are 30 in B space, 1 that A and B occer at the same time, that the probability of A given B is 1/30, thus we
    have the above image.
+   ![img_11.png](img_11.png)
 2. How to choose appropriate dataset for testing or training?
 3. How to setup the hyperparameters for different dataset? Is it making a lot of difference by using better
    hyperparameters?
