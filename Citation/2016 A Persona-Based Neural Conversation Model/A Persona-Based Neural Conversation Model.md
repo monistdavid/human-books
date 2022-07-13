@@ -12,6 +12,9 @@ Notes
 
 1. A persona can be viewed as a composite of elements of identity (background facts or user profile), language behavior,
    and interaction style.
+2. The Speaker Model integrates a speaker-level vector representation into the target part of the SEQ2SEQ model.
+   Analogously, the Speaker-Addressee model encodes the interaction patterns of two interlocutors by constructing an
+   interaction representation from their individual embeddings and incorporating it into the SEQ2SEQ model.
 
 Thoughts
 ===============
