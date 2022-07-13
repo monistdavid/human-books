@@ -55,12 +55,17 @@ Thoughts
        something is different?
 5. given that the variables are independent to each other:
     1. ![img_5.png](img_5.png)
-6. log likelihood is just the log of likelihood. There are two properties by using log:
+6. likelihood is how likely certain model have parameter value given some data
+7. log likelihood is just the log of likelihood. There are two properties by using log:
     1. product turns to sum / exponent turns to product ![img_6.png](img_6.png)
         1. The reason why we truns the product to sums is because the probabilities are so small that multipling them
            will quickly make the probability to zero v![img_7.png](img_7.png). Product and sum actually takes the same
            rules here. They both enable two models to compare their values with each other. By visiualing the graph:
            ![img_8.png](img_8.png)
+8. Maximum likelihood estimation (MLE) finds parameters that best fits the data given. Estimator is a function (any
+   function) that finds a maximum likelihood. Derivative is the slope of a curved line at certain point. When a function
+   is at a minimum or maximum, then the slope(derivative) is at zero 0. So we can look for all the slope 0 point and get
+   the maximum y with given x, and that point is maximum likelihood.
 
 Summary
 ===============
