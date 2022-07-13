@@ -55,7 +55,11 @@ Thoughts
        something is different?
 5. given that the variables are independent to each other:
     1. ![img_5.png](img_5.png)
-6. likelihood is how likely certain model have parameter value given some data
+6. likelihood is how likely a model have certain parameter value given some data.
+   1. This is equal to the probability of we get some data if we know the model  ![img_9.png](img_9.png)
+   2. likelihood describe the odds that models fits our expectation. (model fits data)
+   3. probability describe the change we get the data given the model. (data fits model)
+      ![img_10.png](img_10.png)
 7. log likelihood is just the log of likelihood. There are two properties by using log:
     1. product turns to sum / exponent turns to product ![img_6.png](img_6.png)
         1. The reason why we truns the product to sums is because the probabilities are so small that multipling them
