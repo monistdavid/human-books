@@ -35,8 +35,19 @@ Notes
     2. Criterion
         1. ![img_3.png](img_3.png)
         2. In MMI, parameters are chosen to maximize (pairwise) mutual information between the source S and the target
-           T: ![img_4.png](img_4.png)
-        3.
+           T: ![img_4.png](img_4.png) This avoids favoring responses that unconditionally enjoy high probability, and
+           instead biases towards those responses that are specific to the given input.
+           ![img_11.png](img_11.png)
+           The MMI objective can write as follows:
+           ![img_12.png](img_12.png)
+           We use a generalization of the MMI objective which introduces a hyperparameter λ that controls how much to
+           penalize generic responses
+           ![img_13.png](img_13.png)
+           An alternate formulation of the MMI objective uses Bayes’ theorem
+           ![img_14.png](img_14.png)
+           Thus:
+           ![img_15.png](img_15.png)
+        3. 
 
 Thoughts
 ===============
@@ -56,10 +67,10 @@ Thoughts
 5. given that the variables are independent to each other:
     1. ![img_5.png](img_5.png)
 6. likelihood is how likely a model have certain parameter value given some data.
-   1. This is equal to the probability of we get some data if we know the model  ![img_9.png](img_9.png)
-   2. likelihood describe the odds that models fits our expectation. (model fits data)
-   3. probability describe the change we get the data given the model. (data fits model)
-      ![img_10.png](img_10.png)
+    1. This is equal to the probability of we get some data if we know the model  ![img_9.png](img_9.png)
+    2. likelihood describe the odds that models fits our expectation. (model fits data)
+    3. probability describe the change we get the data given the model. (data fits model)
+       ![img_10.png](img_10.png)
 7. log likelihood is just the log of likelihood. There are two properties by using log:
     1. product turns to sum / exponent turns to product ![img_6.png](img_6.png)
         1. The reason why we truns the product to sums is because the probabilities are so small that multipling them
@@ -70,6 +81,12 @@ Thoughts
    function) that finds a maximum likelihood. Derivative is the slope of a curved line at certain point. When a function
    is at a minimum or maximum, then the slope(derivative) is at zero 0. So we can look for all the slope 0 point and get
    the maximum y with given x, and that point is maximum likelihood.
+9. Bayes' Theorem
+   1. ![img_16.png](img_16.png)
+   2. ![img_17.png](img_17.png)
+   3. ![img_18.png](img_18.png)
+   4. ![img_19.png](img_19.png)
+   5. ![img_20.png](img_20.png)
 
 Summary
 ===============

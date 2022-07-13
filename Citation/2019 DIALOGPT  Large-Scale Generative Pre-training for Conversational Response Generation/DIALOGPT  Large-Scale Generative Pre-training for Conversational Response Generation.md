@@ -44,6 +44,24 @@ Notes
    |T1, · · · , Ti−1)
    source-target pairs.
 6. Maximum mutual information scoring function
+    1. MMI employs a pre-trained backward model to predict source sentences from given responses, i.e., P(Source|target)
+       . We first generate a set of hypotheses using top-K sampling. Then we use the probability of P(Source|Hypothesis)
+       to rerank all hypotheses. Intuitively, maximizing backward model likelihood penalizes the bland hypotheses, as
+       frequent and repetitive hypotheses can be associated with many possible queries, thus yielding a lower
+       probability for any specific query.
+7. Our model uses a vocabulary of 50,257 entries, and was trained on 16 Nvidia V100 machines with NVLink. We used the
+   Noam learning rate scheduler with 16000 warm-up steps. The learning rate is selected based on validation loss. Each
+   model is trained until there is no progress in validation loss. For small and medium models, we trained the models
+   for up to 5 epochs. For the large model we trained for at most 3 epochs.
+8. Speeding up training To accelerate the training process and accommodate GPU memory limitations, we first compress all
+   training data into a lazy-loading database file, so that data is loaded only when needed (pre-fetching large chunks
+   to reduce access frequency). We also leverage separate asynchronous data processes to scale the training. As a
+   result, training time declines approximately linearly w.r.t. the number of GPUs. We further employed a dynamic
+   batching strategy to group conversations of similar lengths into the same batch, thus increasing training throughput.
+9. ![img_8.png](img_8.png)
+10. Human evaluations We evaluated 2000 randomly sampled test sources from the Reddit 6K test dataset using
+    crowd-sourcing. Systems were paired and each pair of system outputs was randomly presented to 3 judges, who ranked
+    them for relevance, informativeness and how humanlike the generating is using a 3-point Likert-like scale.
 
 Thoughts
 ===============
@@ -72,6 +90,13 @@ Thoughts
     1. People will be interested in open sourced paper
     2. people will get interested in papers more after they get interested in the concept
 9. How do I know if the parameters of a model is large enough for the training purpose.
+10. if the DIALOGPT is trained on dataset with context, why it is only able to answer questions with single turn.
 
 Summary
 ===============
+In general, DialoGPT is a conversational model finetuned on language model GPT2. Thanks to the architecture of GPT2, the
+autoregressive property of language model GPT2, the DialoGPT is able to generate response based on the given context. Compared
+with GPT2's language generation ability, DialoGPT is more likely to generate conversational style languages. 
+One of the key difference of DialoGPT is the using of MMI to penalize the usage of blend and generic response. I am not
+100% understand the process of making MMI backword model, however, from the result table, the MMI reranking doesn't seem 
+improve the performance of model compared with beam search. 
