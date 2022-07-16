@@ -135,17 +135,15 @@ Thoughts
 Summary
 ===============
 This is one of the classical papers that tries to solve the persona consistency issue. The two models this paper
-provides are speaker, speaker-address model.As we know, the conversational AI is trained on a lot of different persona's
-dialogues. In other words, the training dataset includes a lot of dialogues from a lot of different people. As different
-people come from different background, they might have different answers for different questions. Thus, the model might
-be confused of who he is. (Am I from England or China? Am I a student or a nurse?). By solving or mitigating this issue,
-author gives each user a embedding to represent its persona. Training with some given personas with dialogues, the
-seq-to-seq model is able to catch the relationship between the user embeddings with the dialogues. Thus, the model have
-a way to represent user's persona with matrix which are transformed from the given persona. Furthermore, the similarity
+provides are speaker, speaker-address model. As we know, the conversational AI is trained on a lot of different
+persona's dialogues. In other words, the training dataset includes a lot of dialogues from a lot of different people. As
+different people come from different background, they might have different answers for different questions. Thus, the
+model might be confused of who he is. (Am I from England or China? Am I a student or a nurse?). By solving or mitigating
+this issue, author gives each user an embedding to represent its persona. During the training process,  
+the model catch user's persona and make an embeddings to represent the user's information. Furthermore, the similarity
 of embeddings which include different information might represent similar users. So the information of users might not
 be limited to the given explicit persona but some hidden persona from the training dataset. Besides, catching the
 speakers' identity, author also try to study how speaking with different people will change the way the model talks. By
 combining both speakers' persona embeddings, the interaction embedding matrix is formed, and it partially performs the
-different speaking style between different speakers. 
-The model is tested on three different dataset and did improve the performance of the SOTA seq-to-seq chitchat model
-performance. 
+different speaking style between different speakers. The model is tested on three different dataset and did improve the
+performance of the SOTA seq-to-seq chitchat model performance. 
