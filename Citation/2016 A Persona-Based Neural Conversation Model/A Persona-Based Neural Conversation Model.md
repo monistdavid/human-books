@@ -78,6 +78,13 @@ Notes
            well with human judgment on the response generation task, as demonstrated in (Galley et al., 2015). Besides
            BLEU scores, we also report perplexity as an indicator of model capability.
     2. Baseline
+11. Results:
+    ![img_15.png](img_15.png)
+    1. Perplexity is reported in Table 3. We observe about a 10% decrease in perplexity for the Speaker model over the
+       standard SEQ2SEQ model. In terms of BLEU scores (Table 4), a significant performance boost is observed for the
+       Speaker model over the standard SEQ2SEQ model, yielding an increase of 21% in the maximum likelihood (MLE)
+       setting and 11.7% for mutual information setting
+       (MMI).
 
 Thoughts
 ===============
@@ -119,8 +126,26 @@ Thoughts
    maybe most of the answers are "I don't know", so it's hard to generate the answer according to possibilities. One of
    the main clues is the human's conversations are usually short and without explicit persona noted. So probably using
    book as new training dataset could let model do a better job on output searching result?
+    1. my thought was correct. ( It is worth noting that our persona models are more beneficial to the MLE models than
+       to the MMI models. This result is intuitive as the persona models help make Standard LSTM MLE outputs more
+       informative and less bland, and thus make the use of MMI less critical.)
 9. Seems like the beam search cannot solve the generic and commonplace responses issue.
-10. Unexpected details are the keys
+10. Unexpected details are the keys to solve or discover the questions.
 
 Summary
 ===============
+This is one of the classical papers that tries to solve the persona consistency issue. The two models this paper
+provides are speaker, speaker-address model.As we know, the conversational AI is trained on a lot of different persona's
+dialogues. In other words, the training dataset includes a lot of dialogues from a lot of different people. As different
+people come from different background, they might have different answers for different questions. Thus, the model might
+be confused of who he is. (Am I from England or China? Am I a student or a nurse?). By solving or mitigating this issue,
+author gives each user a embedding to represent its persona. Training with some given personas with dialogues, the
+seq-to-seq model is able to catch the relationship between the user embeddings with the dialogues. Thus, the model have
+a way to represent user's persona with matrix which are transformed from the given persona. Furthermore, the similarity
+of embeddings which include different information might represent similar users. So the information of users might not
+be limited to the given explicit persona but some hidden persona from the training dataset. Besides, catching the
+speakers' identity, author also try to study how speaking with different people will change the way the model talks. By
+combining both speakers' persona embeddings, the interaction embedding matrix is formed, and it partially performs the
+different speaking style between different speakers. 
+The model is tested on three different dataset and did improve the performance of the SOTA seq-to-seq chitchat model
+performance. 
