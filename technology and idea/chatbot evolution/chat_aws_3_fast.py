@@ -1,6 +1,5 @@
 all_questions = []
 all_user = []
-all_chatbot = []
 
 
 # adjust the speaker identity
@@ -8,8 +7,7 @@ def edit_identity(sentence):
     forbidden = ["I am not dog", "I am not a dog", "I am not doge", "I am not a doge", "I am a human", "I am a person",
                  "I am a dog person", "I am a cat person", "I'm sorry to hear that", "I have a dog", "I have a cat",
                  "it is hard for me to believe", "I'm sorry about that", "I am so sorry to hear that"
-                                                                         "I have a dog and a cat",
-                 "I have a cat and a dog"]
+                 "I have a dog and a cat", "I have a cat and a dog"]
     response_tmp = ''
     for i in sentence.split(".")[:-1]:
         skip = False
@@ -154,7 +152,6 @@ index = faiss.IndexFlatIP(d)
 faiss.normalize_L2(sentence_embeddings)
 index.add(sentence_embeddings)
 
-
 def find_response_acquire(context):
     k = 4
     context_tmp = ''
@@ -185,30 +182,6 @@ def find_response_acquire(context):
 #         xq = model.encode([context[-1]])
 #         D, I = index.search(xq, k)
 #         return [random.choice(raw[list(raw.keys())[i]]).lower() for i in I[0]]
-
-from deploy_doge_1.acquire.acquire_deploy import NeuralNetwork
-from deploy_doge_1.acquire.config import args as args_acquire
-import random
-
-model_acquire = NeuralNetwork(args=args_acquire)
-model_acquire.load_model(args_acquire.save_path)
-data_acquire = open("deploy_doge_1/acquire/dogs_result", 'r', encoding="utf-8").readlines()
-
-
-## acquire model generate response
-def find_response_acquired(context_temp, data):
-    result_acquire = model_acquire.predict('', context_temp, data)
-    final = random.choice(result_acquire)
-    final = data[int(final)][:-1]
-    return final
-
-
-def find_multiple_response_acquired(context_temp, data):
-    result_acquire = model_acquire.predict('', context_temp, data)
-    multiple_final = []
-    for i in result_acquire:
-        multiple_final.append(data[int(i)][:-1])
-    return multiple_final
 
 
 """
@@ -335,7 +308,7 @@ tags_rule = {'Name': 0, 'Language': 1, 'Gender': 2, 'Identity': 3, 'Age': 4, 'Ho
 def find_response_rule(context_temp, tags, intents):
     result = pipe_rule(context_temp)
     all_score = []
-    for r in result[0]:
+    for r in result:
         all_score.append(r['score'])
     final_result = max(all_score)
     final_tag_index = all_score.index(final_result)
@@ -353,7 +326,7 @@ def find_response_rule(context_temp, tags, intents):
 
 
 """
-Fact, Life or Rag Rank
+Fact Or Life Rank
 """
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
@@ -365,14 +338,14 @@ model_fact_life_rank = AutoModelForSequenceClassification.from_pretrained(
 
 pipe = TextClassificationPipeline(model=model_fact_life_rank, tokenizer=tokenizer_fact_life_rank,
                                   return_all_scores=True)
-tags = {'Fact': 0, 'Life': 1, 'Rag': 2}
+tags = {'Fact': 0, 'Life': 1}
 
 
 ## fact-life rank model generate response
 def fact_life_rank_response(tags, query):
     result = pipe(query)
     final = []
-    for r in result[0]:
+    for r in result:
         final.append(r['score'])
     final_result = final.index(max(final))
     return list(tags.keys())[final_result]
@@ -388,6 +361,7 @@ import random
 #
 model_acquire = NeuralNetwork(args=args_acquire)
 model_acquire.load_model(args_acquire.save_path)
+data_acquire = open("deploy_doge_1/acquire/dogs_result", 'r', encoding="utf-8").readlines()
 
 
 ## rank model generate response
@@ -407,7 +381,6 @@ bot_name = "Doge"
 
 app = Flask(__name__)
 
-context = []
 all_jokes = {"What breed of dog goes after anything that is red?": "A Bulldog.",
              "When you cross an aggressive dog with a computer, what do you get?": "A lot of bites.",
              "Why are dogs' barks so loud?": "They have built-in sub-woofers.",
@@ -463,7 +436,7 @@ def history(user_id):
 
 
 @app.route("/get")
-def get_bot_response(context=context, all_user=all_user):
+def get_bot_response(all_user=all_user):
     global result_final
     if User.query.filter_by(name=str(request.remote_addr)).first() is not None:
         cur_user = User.query.filter_by(name=str(request.remote_addr)).first()
@@ -471,6 +444,9 @@ def get_bot_response(context=context, all_user=all_user):
         cur_user = User(name=str(request.remote_addr))
         db.session.add(cur_user)
         db.session.commit()
+    context = []
+    for each in User.query.filter_by(name=str(request.remote_addr)).first().history:
+        context.append(each.sentence.replace("doge:   ", "").replace("human:   ", ""))
     sentence = request.args.get("msg")
     if cur_user is not None and sentence is not None:
         tmp_history = Chat(sentence="human:   " + sentence, user_id=cur_user.id)
@@ -540,11 +516,6 @@ def get_bot_response(context=context, all_user=all_user):
                     print("fact")
                 if skip:
                     break
-            if len(sentence) <= 10 and not skip:
-                result_open = find_response_open(context, result_acquired, get_summary(all_user),
-                                                 blender_msc_agent)
-                result_final = result_open
-                print("fact")
             if not skip:
                 if type(result_acquired) != list and result_acquired != context[-2]:
                     result_final = result_acquired
@@ -552,20 +523,21 @@ def get_bot_response(context=context, all_user=all_user):
                     fact_life_rank = fact_life_rank_response(tags, sentence)
                     print(fact_life_rank)
                     if fact_life_rank == "Life":
-                        result_acquired_bert = find_multiple_response_acquired(context, data_acquire)
-                        result_open = find_response_open(context, result_acquired, get_summary(all_user),
-                                                         blender_msc_agent)
-                        result_rag = find_rag_open(context[-1:])
-                        result_acquired_bert.append(result_open)
-                        result_acquired_bert.append(result_rag)
-                        result_final = rank_response(context[-3:], result_acquired_bert, 6)
-                        print(result_acquired_bert)
-                    elif fact_life_rank == "Rag":
-                        result_rag = find_rag_open(context[-1:])
-                        result_final = result_rag
+                        if len(sentence) <= 10 and not skip:
+                            result_open = find_response_open(context, result_acquired, get_summary(all_user),
+                                                             blender_msc_agent)
+                            result_final = result_open
+                            print("fact")
+                        elif not skip:
+                            result_rag = find_rag_open(context[-1:])
+                            result_open = find_response_open(context, result_acquired, get_summary(all_user),
+                                                             blender_msc_agent)
+                            print(result_rag)
+                            print(result_open)
+                            print(result_acquired)
+                            result_final = rank_response(context[-3:], [result_open, result_rag] + result_acquired, 6)
                     else:
-                        result_open = find_response_open(context, result_acquired, get_summary(all_user),
-                                                         blender_msc_agent)
+                        result_open = find_response_open(context, result_acquired, get_summary(all_user), blender_msc_agent)
                         result_final = result_open
         if result_final in context:
             result_final = find_response_open(context, result_final, get_summary(all_user), blender_msc_agent)
