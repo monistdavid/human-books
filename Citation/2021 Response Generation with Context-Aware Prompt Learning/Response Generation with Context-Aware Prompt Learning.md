@@ -122,7 +122,7 @@ Notes
            “tie” (equally good or bad).
            ![img_10.png](img_10.png)
 
-Thoughts
+Thoughts with Additional Information
 ===============
 
 1. conditional probability

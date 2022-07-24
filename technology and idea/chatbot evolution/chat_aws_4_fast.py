@@ -41,28 +41,95 @@ def find_response_open(fro_input, fro_persona, fro_history):
 """
 Acquire Model
 """
-from deploy_doge_1.acquire.acquire_deploy import NeuralNetwork
-from deploy_doge_1.acquire.config import args as args_acquire
+"""
+Acquire Model
+"""
+from sentence_transformers import SentenceTransformer
 
-model_acquire = NeuralNetwork(args=args_acquire)
-model_acquire.load_model(args_acquire.save_path)
-data_acquire = open("deploy_doge_1/acquire/dogs_result", 'r', encoding="utf-8").readlines()
+model = SentenceTransformer('stsb-roberta-large')
+import numpy as np
+import faiss
+import random
 
-
-# acquire model generate response
-def find_response_acquired(fra_context, fra_data):
-    result_acquire = model_acquire.predict('', fra_context, fra_data)
-    final = random.choice(result_acquire)
-    final = fra_data[int(final)][:-1]
-    return final
+raw = {}
 
 
-def find_multiple_response_acquired(fmra_context, data):
-    result_acquire = model_acquire.predict('', fmra_context, data)
-    multiple_final = []
-    for i in result_acquire:
-        multiple_final.append(data[int(i)][:-1])
-    return multiple_final
+def get_one_combination(info):
+    tmp_key = ""
+    context = ""
+    count = 0
+    for i in info:
+        count += 1
+        if count == 2:
+            count = 0
+            context = ""
+        context += i[3:-1]
+        if tmp_key != "" and i[0] == "D":
+            try:
+                if i[3:-1] not in raw[tmp_key]:
+                    raw[tmp_key].append(i[3:-1])
+            except:
+                raw[tmp_key] = [i[3:-1]]
+        elif i[0] == "P":
+            tmp_key = context
+
+
+def get_all_combination(info):
+    for i in range(len(info)):
+        get_one_combination(info[i:])
+
+
+with open('deploy_doge_1/acquire/dogs', 'r', encoding='utf-8') as file:
+    store_info = []
+    for i in file:
+        if i == "\n":
+            get_all_combination(store_info)
+            store_info = []
+        else:
+            store_info.append(i)
+
+for index, sentence in enumerate(raw.keys()):
+    if index == 0:
+        sentence_embeddings = model.encode([sentence])
+    else:
+        sentence_embeddings = np.append(sentence_embeddings, model.encode([sentence]), axis=0)
+
+d = 1024
+index = faiss.IndexFlatIP(d)
+faiss.normalize_L2(sentence_embeddings)
+index.add(sentence_embeddings)
+
+
+def find_response_acquire(context):
+    k = 4
+    context_tmp = ''
+    if len(context[-1]) <= 10:
+        for i in context:
+            context_tmp += i
+        xq = model.encode([context])
+    else:
+        xq = model.encode([context[-1]])
+    D, I = index.search(xq, k)
+    return random.choice([random.choice(raw[list(raw.keys())[i]]).lower() for i in I[0]])
+
+
+# def find_response_acquire(context):
+#     k = 4
+#     context_tmp = ''
+#     if len(context[-1]) <= 10:
+#         for i in context:
+#             context_tmp += i
+#         xq = model.encode([context])
+#     else:
+#         xq = model.encode([context[-1]])
+#     D, I = index.search(xq, k)
+#     if D[0][0] >= 21:
+#         print(raw[list(raw.keys())[I[0][0]]])
+#         return raw[list(raw.keys())[I[0][0]]].lower()
+#     else:
+#         xq = model.encode([context[-1]])
+#         D, I = index.search(xq, k)
+#         return [random.choice(raw[list(raw.keys())[i]]).lower() for i in I[0]]
 
 
 """
@@ -71,11 +138,11 @@ Respond Rank
 
 
 # rank model generate response
-def rank_response(context_temp, data, total):
-    result_acquire = model_acquire.predict_rank('', context_temp, data, total)
-    final = result_acquire[0]
-    final = data[int(final)]
-    return final
+# def rank_response(context_temp, data, total):
+#     result_acquire = model_acquire.predict_rank('', context_temp, data, total)
+#     final = result_acquire[0]
+#     final = data[int(final)]
+#     return final
 
 
 """
@@ -121,7 +188,7 @@ tags_rule = {'Name': 0, 'Language': 1, 'Gender': 2, 'Identity': 3, 'Age': 4, 'Ho
 def get_response_intent(fru_context, fru_tags, fru_intents):
     result = pipe_rule(fru_context)
     all_score = []
-    for r in result[0]:
+    for r in result:
         all_score.append(r['score'])
     final_result = max(all_score)
     final_tag_index = all_score.index(final_result)
@@ -181,7 +248,7 @@ tags_fact_life_rank = {'Fact': 0, 'Life': 1}
 def fact_life_rank_response(flrr_tags, query):
     result = pipe(query)
     final = []
-    for r in result[0]:
+    for r in result:
         final.append(r['score'])
     final_result = final.index(max(final))
     return list(flrr_tags.keys())[final_result]
@@ -259,7 +326,7 @@ def update_user_history(uuh_sentence, uuh_cur_user):
 def catch_key_open(cko_keywords, cko_input, cko_history):
     for word in cko_keywords:
         if word in cko_input:
-            result_open = find_response_open(cko_history[-1], doge_persona, cko_history)
+            result_open = find_response_open(cko_history, doge_persona, cko_history)
             return result_open
     return "pass"
 
@@ -517,8 +584,9 @@ def get_bot_response(all_user=all_user):
         if result_final in context:
             # result_open = find_response_open(context[-1], doge_persona, context)
             # result_final = result_open
-            result_acquired_bert = find_multiple_response_acquired(context, all_dog_start)
-            result_final = rank_response(context[-3:], result_acquired_bert, 4)
+            result_acquired_bert = find_response_acquire(context[-1])
+            result_final = result_acquired_bert
+            # result_final = rank_response(context[-3:], result_acquired_bert, 4)
             if result_final in all_picture_match:
                 picture = random.choice(all_picture_match[result_final])
             print("duplicated, using open")

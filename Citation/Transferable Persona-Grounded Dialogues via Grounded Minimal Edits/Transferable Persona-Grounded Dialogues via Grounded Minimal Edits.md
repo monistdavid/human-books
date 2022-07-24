@@ -110,7 +110,7 @@ Notes
                it does not appear in the persona p e or the dialogue history c. We merge consecutive masks to get span
                masks. This process is denoted as T φ test(t|c, ro , pe) in Algorithm 1.
 
-Thoughts
+Thoughts with Additional Information
 ===============
 
 1. the first question mentioned in the challenges regarding transferability also appeared in the RAG, sometimes the

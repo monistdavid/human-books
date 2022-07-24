@@ -18,7 +18,11 @@ Question
 
 Notes
 ===============
-
+1. there are three dimensions need to be considered about for every project.
+   1. goal
+   2. difficulties
+   3. resources
+2. 
 
 
 Thoughts

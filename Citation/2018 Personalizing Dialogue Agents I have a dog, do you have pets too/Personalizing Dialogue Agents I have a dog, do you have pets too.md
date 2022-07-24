@@ -96,7 +96,7 @@ Notes
        dialogue with high accuracy (94.3%, similar to human performance) or even from the model’s dialogue (
        23% with KV Profile Memory) showing the model is paying attention to the human interests.
 
-Thoughts
+Thoughts with Additional Information
 ===============
 
 1. if we don't use training data over many dialogs each with different speakers, is it possible to categorize the data?

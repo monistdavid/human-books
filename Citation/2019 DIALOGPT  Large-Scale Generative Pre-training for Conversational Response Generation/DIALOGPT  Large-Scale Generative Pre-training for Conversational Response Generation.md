@@ -63,7 +63,7 @@ Notes
     crowd-sourcing. Systems were paired and each pair of system outputs was randomly presented to 3 judges, who ranked
     them for relevance, informativeness and how humanlike the generating is using a 3-point Likert-like scale.
 
-Thoughts
+Thoughts with Additional Information
 ===============
 
 1. DIALOGPT is trained on 147M conversation-like exchanges from reddit?

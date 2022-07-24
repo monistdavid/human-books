@@ -86,7 +86,7 @@ Notes
        setting and 11.7% for mutual information setting
        (MMI).
 
-Thoughts
+Thoughts with Additional Information
 ===============
 
 1. It is really hard to mimic a human's talking behavior, but that is not important because a book character's
