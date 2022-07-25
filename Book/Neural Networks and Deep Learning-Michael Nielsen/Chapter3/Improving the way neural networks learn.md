@@ -38,7 +38,7 @@ Notes
        equation for the quadratic cost, Equation (55). When we use the cross-entropy, the σ′(z) term gets canceled out,
        and we no longer need worry about it being small.
 
-Thoughts
+Thoughts with Additional Information
 ===============
 
 

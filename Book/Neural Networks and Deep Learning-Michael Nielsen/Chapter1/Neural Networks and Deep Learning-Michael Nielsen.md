@@ -95,7 +95,7 @@ Notes
    of ever more complex and abstract concepts. Networks with this kind of many-layer structure - two or more hidden
    layers - are called deep neural networks.
 
-Thoughts
+Thoughts with Additional Information
 ===============
 
 1. if the perceptron simulate a decision-making process. Why a perceptron will give a confident wrong prediction on a

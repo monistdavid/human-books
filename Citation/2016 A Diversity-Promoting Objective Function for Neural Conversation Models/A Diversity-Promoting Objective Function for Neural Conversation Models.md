@@ -54,7 +54,7 @@ Notes
            penalize generic responses
            ![img_13.png](img_13.png)
            An alternate formulation of the MMI objective uses Bayes’ theorem
-           ![img_14.png](img_14.png)
+           ![img_14.png](img_14.png)![img_34.png](img_34.png)
            Thus:
            ![img_15.png](img_15.png)
 6. MMI-antiLM
@@ -156,7 +156,8 @@ Thoughts with Additional Information
     previously-predicted words are encoded in the vector representations. In other words, the first words to be
     predicted significantly determine the remainder of the sentence.
     1. Is it possible to generate a sentence from the back?
-13.
+13. log A + log B = log (AB)    log(a) - log(b) = log(a/b)   log(a) + log(b) - log(c)= log(ab/c)
+14. 
 
 Summary
 ===============

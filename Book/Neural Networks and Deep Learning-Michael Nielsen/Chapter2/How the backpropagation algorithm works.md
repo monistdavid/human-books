@@ -15,7 +15,7 @@ Notes
 
 
 
-Thoughts
+Thoughts with Additional Information
 ===============
 
 
